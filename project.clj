@@ -10,5 +10,9 @@
                  [ring/ring-json "0.5.0-beta1"]
                  [ring/ring-defaults "0.3.2"]
                  [com.novemberain/monger "3.5.0"]
-                 [cheshire "5.3.1"]]
-  :plugins [[lein-ring "0.12.4"]])
+                 [cheshire "5.3.1"]
+                 [org.clojure/tools.logging "0.4.1"]
+                 [org.apache.logging.log4j/log4j-core "2.11.1"]
+                 [org.apache.logging.log4j/log4j-slf4j-impl "2.11.1"]]
+  :plugins [[lein-ring "0.12.4"]]
+  :resource-paths ["/resources"])
