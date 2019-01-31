@@ -6,6 +6,7 @@
             [ring.util.response :refer [response]]
             [compojure.handler :as handler]
             [junk-sender.db :refer :all]
+            [clojure.tools.logging :refer :all]
             monger.json))
 
 (defn- wrap-response [body]
@@ -16,31 +17,55 @@
                            :body    (str e)
                            :status  500})))
 
-(defn- wrap-error [func & args]
-  (try
-    (prn args)
-    (wrap-response (apply func args))
-    (catch Exception e {:status 400 :body (str "Error occurred: " e)})))
+(defn error-response [msg]
+  {:status 500 :body (str msg)})
 
 (defroutes router
-           (GET "/api/v1/user/:id" [id] (wrap-error find-one :user id))
-           (GET "/api/v1/user" [] (wrap-response (find-all :user)))
-           (POST "/api/v1/user" {body :body} (wrap-error insert-doc :user body))
-           (PUT "/api/v1/user" {body :body} (wrap-error update-doc :user body))
+           (GET "/api/v1/user/:id" [id] (try (wrap-response (find-one :user id))
+                                             (catch Exception e (warn "Error on find user with id: " id " " (.getMessage e))
+                                                                (error-response e))))
+           (GET "/api/v1/user" []       (try (wrap-response (find-all :user))
+                                              (catch Exception e (warn "Error on find all users" (.getMessage e))
+                                                                 (error-response e))))
+           (POST "/api/v1/user" {body :body} (try (wrap-response (insert-doc :user body))
+                                                  (catch Exception e (warn "Error on insert user" (.getMessage e))
+                                                                     (error-response e))))
+           (PUT "/api/v1/user" {body :body} (try (wrap-response (update-doc :user body))
+                                                 (catch Exception e (warn "Error on update user" (.getMessage e))
+                                                                    (error-response e))))
            (DELETE "/api/v1/user/:id" [id] (try (delete-one :user id) {:status 202}
-                                                (catch Exception e {:status 500 :body (str e)})))
-           (GET "/api/v1/template/:id" [id] (wrap-error (find-one :template id)))
-           (GET "/api/v1/template" [] (wrap-response (find-all :template)))
-           (POST "/api/v1/template" {body :body} (wrap-error insert-doc :template body))
-           (PUT "/api/v1/template" {body :body} (wrap-error update-doc :template body))
-           (DELETE "/api/v1/template/:id" [id](try (delete-one :template id) {:status 202}
-                                                   (catch Exception e {:status 500 :body (str e)})))
-           (GET "/api/v1/message/:id" [id] (wrap-error (find-one :msgReq id)))
-           (GET "/api/v1/message" [] (wrap-response (find-all :msgReq)))
-           (POST "/api/v1/message" {body :body} (wrap-error insert-doc :msgReq body))
-           (PUT "/api/v1/message" {body :body} (wrap-error update-doc :msgReq body))
+                                                (catch Exception e (warn "Error on delete user with id: " id " " (.getMessage e))
+                                                                   (error-response e))))
+           (GET "/api/v1/template/:id" [id] (try (wrap-response (find-one :template id))
+                                                 (catch Exception e (warn "Error on find template with id: " id " " (.getMessage e))
+                                                                    (error-response e))))
+           (GET "/api/v1/template" [] (try (wrap-response (find-all :template))
+                                           (catch Exception e (warn "Error on find all templates" (.getMessage e))
+                                                              (error-response e))))
+           (POST "/api/v1/template" {body :body} (try (wrap-response (insert-doc :template body))
+                                                      (catch Exception e (warn "Error on insert template" (.getMessage e))
+                                                                         (error-response e))))
+           (PUT "/api/v1/template" {body :body} (try (wrap-response (update-doc :template body))
+                                                     (catch Exception e (warn "Error on update template" (.getMessage e))
+                                                                        (error-response e))))
+           (DELETE "/api/v1/template/:id" [id] (try (delete-one :template id) {:status 202}
+                                                    (catch Exception e (warn "Error on delete template with id: " id " " (.getMessage e))
+                                                      (error-response e))))
+           (GET "/api/v1/message/:id" [id] (try (wrap-response (find-one :msgReq id))
+                                                (catch Exception e (warn "Error on find message request with id:" id " " (.getMessage e))
+                                                                   (error-response e))))
+           (GET "/api/v1/message" [] (try (wrap-response (find-all :msgReq))
+                                          (catch Exception e (warn "Error on find all message requests" (.getMessage e))
+                                                             (error-response e))))
+           (POST "/api/v1/message" {body :body} (try (wrap-response (insert-doc :msgReq body))
+                                                     (catch Exception e (warn "Error on insert message request" (.getMessage e))
+                                                                        (error-response e))))
+           (PUT "/api/v1/message" {body :body} (try (wrap-response (update-doc :msgReq body))
+                                                    (catch Exception e (warn "Error on update template" (.getMessage e))
+                                                                       (error-response e))))
            (DELETE "/api/v1/message/:id" [id] (try (delete-one :msgReq id) {:status 202}
-                                                   (catch Exception e {:status 500 :body (str e)})))
+                                                   (catch Exception e (warn "Error on delete message with id: " id " " (.getMessage e))
+                                                                      (error-response e))))
            (route/not-found "Not Found"))
 
 (def handle-req

@@ -13,6 +13,7 @@
                  [cheshire "5.3.1"]
                  [org.clojure/tools.logging "0.4.1"]
                  [org.apache.logging.log4j/log4j-core "2.11.1"]
-                 [org.apache.logging.log4j/log4j-slf4j-impl "2.11.1"]]
+                 [org.apache.logging.log4j/log4j-slf4j-impl "2.11.1"]
+                 [com.novemberain/validateur "2.5.0"]]
   :plugins [[lein-ring "0.12.4"]]
   :resource-paths ["/resources"])
