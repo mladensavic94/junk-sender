@@ -7,6 +7,7 @@
             [compojure.handler :as handler]
             [junk-sender.db :refer :all]
             [clojure.tools.logging :refer :all]
+            [junk-sender.sender :refer :all]
             monger.json))
 
 (defn- wrap-response [body]
@@ -24,7 +25,7 @@
            (GET "/api/v1/user/:id" [id] (try (wrap-response (find-one :user id))
                                              (catch Exception e (warn "Error on find user with id: " id " " (.getMessage e))
                                                                 (error-response e))))
-           (GET "/api/v1/user" []       (try (wrap-response (find-all :user))
+           (GET "/api/v1/user" []       (try (wrap-response (send-email "mladen.savic@igt.com" "jebote?" "<html><body><h1>OPAAAA</h1></body></html>"))
                                               (catch Exception e (warn "Error on find all users" (.getMessage e))
                                                                  (error-response e))))
            (POST "/api/v1/user" {body :body} (try (wrap-response (insert-doc :user body))
