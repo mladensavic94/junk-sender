@@ -15,7 +15,7 @@
 (def collections {:user "user" :template "template" :msgReq "messageRequest"})
 
 (def userValidator (validation-set (presence-of :name) (presence-of :lastName) (presence-of :mail)))
-(def templateValidator (validation-set (presence-of :name) (presence-of :lastName) (presence-of :mail)))
+(def templateValidator (validation-set (presence-of :tempID) (presence-of :src)))
 (def msgReqValidator (validation-set (presence-of :name) (presence-of :lastName) (presence-of :mail)))
 
 (def validators {:user userValidator :template templateValidator :msgReq msgReqValidator})
@@ -33,6 +33,10 @@
 (defn find-one [collection ^String id]
   (info "Find by id:" id " from " (collection collections))
   (mcol/find-map-by-id db (collection collections) (ObjectId. id)))
+
+(defn find-one-by-field [collection field-name value]
+  (info "Find by field:" field-name ": " value" from " (collection collections))
+  (mcol/find-one-as-map db (collection collections) (hash-map field-name value)))
 
 (defn update-doc [collection doc]
   (info "Update " doc " from " (collection collections))

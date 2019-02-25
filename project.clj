@@ -15,6 +15,7 @@
                  [org.apache.logging.log4j/log4j-core "2.11.1"]
                  [org.apache.logging.log4j/log4j-slf4j-impl "2.11.1"]
                  [com.novemberain/validateur "2.5.0"]
-                 [com.draines/postal "2.0.3"]]
+                 [com.draines/postal "2.0.3"]
+                 [comb "0.1.1"]]
   :plugins [[lein-ring "0.12.4"]]
   :resource-paths ["/resources"])
