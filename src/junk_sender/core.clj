@@ -61,12 +61,6 @@
            (POST "/api/v1/message" {body :body} (try (wrap-response (create-and-send body))
                                                      (catch Exception e (warn "Error creating and sending message" (.getMessage e))
                                                                         (error-response e))))
-           (PUT "/api/v1/message" {body :body} (try (wrap-response (update-doc :msgReq body))
-                                                    (catch Exception e (warn "Error on update template" (.getMessage e))
-                                                                       (error-response e))))
-           (DELETE "/api/v1/message/:id" [id] (try (delete-one :msgReq id) {:status 202}
-                                                   (catch Exception e (warn "Error on delete message with id: " id " " (.getMessage e))
-                                                                      (error-response e))))
            (route/not-found "Not Found"))
 
 (def handle-req
