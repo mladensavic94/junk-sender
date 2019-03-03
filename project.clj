@@ -1,6 +1,5 @@
-(defproject junk-sender "0.1.0-SNAPSHOT"
-  :description "FIXME: write description"
-  :url "http://example.com/FIXME"
+(defproject junk-sender "1.0.0"
+  :description "Clojure email templating library"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :ring {:handler junk-sender.core/handle-req}
