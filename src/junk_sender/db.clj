@@ -12,13 +12,12 @@
 (def db
   (mcore/get-db connection "junk-sender"))
 
-(def collections {:user "user" :template "template" :msgReq "messageRequest"})
+(def collections {:template "template" :msgReq "messageRequest"})
 
-(def userValidator (validation-set (presence-of :name) (presence-of :lastName) (presence-of :mail)))
 (def templateValidator (validation-set (presence-of :tempID) (presence-of :src) (presence-of :params)))
 (def msgReqValidator (validation-set (presence-of :to) (presence-of :subject) (presence-of :message)))
 
-(def validators {:user userValidator :template templateValidator :msgReq msgReqValidator})
+(def validators {:template templateValidator :msgReq msgReqValidator})
 
 (defn insert-doc [collection doc]
   (if (valid? (collection validators) doc)
